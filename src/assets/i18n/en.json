@@ -1,0 +1,9 @@
+{
+  "locale": "en",
+  "translations": {
+    "aboutRoutePath": "about",
+    "aboutRouteLabel": "Go to about page",
+    "contactRoutePath": "contact",
+    "contactRouteLabel": "Go to contact page"
+  }
+}
