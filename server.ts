@@ -16,9 +16,6 @@ import {
   loadTranslations,
 } from './src/main.server';
 import { existsSync } from 'fs';
-import { _global } from './global';
-
-const backUpLocalize = _global.$localize;
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -66,11 +63,58 @@ export function app(): express.Express {
     maxAge: '1y',
   }));
 
+  // ORIGINAL:
+  // ---------
 
+  /*
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
     const availableLanguages = ['en', 'nl'];
     const defaultLanguage = 'en';
+    const requestLang = req.originalUrl.split('/')[1].substr(0, 2);
+    const backupLanguage = req.acceptsLanguages(availableLanguages) || defaultLanguage;
+
+    // IF NO LANGUAGE GIVEN
+    //  REDIRECT TO MOST OBVIOUS BACKUPLANGUAGE
+    if (!requestLang) {
+      res.redirect(303, `/${backupLanguage}`);
+      return;
+    }
+
+    // IF NOT VALID LANGUAGE GIVEN
+    //  REDIRECT TO BACKUP LANGUAGE 404
+    if (!availableLanguages.includes(requestLang)) {
+      res.redirect(404, `/${backupLanguage}/404`);
+      return;
+    }
+
+    loadTranslations(translations[requestLang]);
+    res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
+  });
+   */
+
+  // SUGGESTED CHANGE:
+  // -----------------
+
+  const availableLanguages = ['en', 'nl'];
+  const defaultLanguage = 'en';
+
+  // All accepted language/* routes
+  availableLanguages.forEach(language => {
+    server.get(`/${language}`, (req, res) => {
+      const requestLang = req.originalUrl.split('/')[1].substr(0, 2);
+      loadTranslations(translations[requestLang]);
+      res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
+    });
+    server.get(`/${language}/*`, (req, res) => {
+      const requestLang = req.originalUrl.split('/')[1].substr(0, 2);
+      loadTranslations(translations[requestLang]);
+      res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
+    });
+  })
+
+  // Other routes, no language
+  server.get('*', (req, res) => {
     const requestLang = req.originalUrl.split('/')[1].substr(0, 2);
 
     const backupLanguage = req.acceptsLanguages(availableLanguages) || defaultLanguage;
@@ -87,11 +131,9 @@ export function app(): express.Express {
       res.redirect(404, `/${backupLanguage}/404`);
       return;
     }
-    console.log('requestLang', requestLang);
 
-    _global.$localize = backUpLocalize;
-    loadTranslations(translations[requestLang]);
-    res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
+    // loadTranslations(translations[requestLang]);
+    // res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
   });
 
   return server;
