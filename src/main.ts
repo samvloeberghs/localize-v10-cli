@@ -11,8 +11,9 @@ if (environment.production) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const translationData = await getTranslations('/assets/i18n/nl.json');
-    console.log(translationData);
+    const language = window.location.pathname.split('/')[1].substr(0, 2);
+    console.log('language', language);
+    await getTranslations(`/assets/i18n/${language}.json`);
     await platformBrowserDynamic().bootstrapModule(AppModule);
   } catch (err) {
     console.log(err);

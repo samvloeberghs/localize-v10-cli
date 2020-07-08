@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LanguageService } from './language.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,9 @@ import { Component } from '@angular/core';
 export class AppComponent {
   aboutRoutePath = $localize`:about path string|The path string for the about route@@aboutRoutePath:about`;
   contactRoutePath = $localize`:contact path string|The path string for the contact route@@contactRoutePath:contact`;
-  constructor() {
+  public readonly language = this.languageService.language;
+
+  constructor(private readonly languageService: LanguageService) {
+
   }
 }

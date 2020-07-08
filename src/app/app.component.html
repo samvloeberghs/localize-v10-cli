@@ -1,5 +1,16 @@
-<a [routerLink]="['/', aboutRoutePath]" i18n="label about route|The label for the about route@@aboutRouteLabel">Go to about page</a>
+<a href="nl">
+  NL
+</a> |
+<a href="en">
+  EN
+</a>
+
+<hr/>
+
+<a [routerLink]="['/', language, aboutRoutePath]"
+   i18n="label about route|The label for the about route@@aboutRouteLabel">Go to about page</a>
 -
-<a [routerLink]="['/', contactRoutePath]" i18n="label contact route|The label for the contact route@@contactRouteLabel">Go to contact page</a>
+<a [routerLink]="['/', language, contactRoutePath]"
+   i18n="label contact route|The label for the contact route@@contactRouteLabel">Go to contact page</a>
 
 <router-outlet></router-outlet>
