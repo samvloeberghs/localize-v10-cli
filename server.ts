@@ -132,8 +132,8 @@ export function app(): express.Express {
       return;
     }
 
-    // loadTranslations(translations[requestLang]);
-    // res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
+    res.status(500).send('Internal Server Error');
+    return;
   });
 
   return server;
